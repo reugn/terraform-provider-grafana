@@ -27,7 +27,19 @@ func ResourceAlertNotification() *schema.Resource {
 				Required: true,
 			},
 
+			"uid": {
+				Type:     schema.TypeString,
+				Computed: true,
+				Optional: true,
+			},
+
 			"is_default": {
+				Type:     schema.TypeBool,
+				Optional: true,
+				Default:  false,
+			},
+
+			"send_reminder": {
 				Type:     schema.TypeBool,
 				Optional: true,
 				Default:  false,
@@ -103,7 +115,9 @@ func ReadAlertNotification(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	d.Set("id", alertNotification.Id)
+	d.Set("uid", alertNotification.Uid)
 	d.Set("is_default", alertNotification.IsDefault)
+	d.Set("send_reminder", alertNotification.SendReminder)
 	d.Set("name", alertNotification.Name)
 	d.Set("type", alertNotification.Type)
 	d.Set("settings", settings)
@@ -144,10 +158,12 @@ func makeAlertNotification(d *schema.ResourceData) (*gapi.AlertNotification, err
 	}
 
 	return &gapi.AlertNotification{
-		Id:        id,
-		Name:      d.Get("name").(string),
-		Type:      d.Get("type").(string),
-		IsDefault: d.Get("is_default").(bool),
-		Settings:  settings,
+		Id:           id,
+		Uid:          d.Get("uid").(string),
+		Name:         d.Get("name").(string),
+		Type:         d.Get("type").(string),
+		IsDefault:    d.Get("is_default").(bool),
+		SendReminder: d.Get("send_reminder").(bool),
+		Settings:     settings,
 	}, err
 }
